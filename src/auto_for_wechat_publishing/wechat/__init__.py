@@ -1,0 +1,1 @@
+"""WeChat API interaction package for article publishing.""" 
