@@ -1,93 +1,172 @@
-"""Main script for WeChat article publishing."""
+"""
+main.py
 
+Entry point for the WeChat publishing automation script.
+
+Dependencies:
+    - core modules: markdown_processor, html_processor, payload_builder
+    - wechat modules: api, auth
+    - utils: logging_setup, file_handler
+
+Input: markdown articles and media files
+Output: Published articles to WeChat Draft Box
+"""
+# auto_for_wechat_publishing/main.py
 import logging
+import argparse
 from pathlib import Path
+import sys
+from functools import partial # To create upload callback with token
 
-from .configuration import SETTINGS
-from .content.html_generator import HTMLGenerator
-from .content.media_extractor import MediaExtractor
-from .content.input_reader import InputReader
-from .content.data_models import WeChatArticle
-from .wechat.wechat_api_client import WeChatAPIClient
-from .wechat.wechat_exceptions import WeChatAPIError
+# Import utility functions
+from .utils.logging_setup import setup_logging
+from .utils.config_loader import load_config, get_env_variable
+from .utils.file_handler import read_file, write_file # If needed for output
 
+# Import core processing modules
+from .core.metadata_reader import extract_metadata
+from .core.markdown_processor import extract_markdown_content
+from .core.html_processor import process_html_content
+from .core.payload_builder import build_draft_payload
 
-def setup_logging():
-    """Configure logging for the application."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+# Import WeChat API interaction modules
+from .wechat.auth import get_access_token
+from .wechat.api import upload_thumb_media, add_draft, upload_content_image
+
+# Initialize logger for this module
+logger = logging.getLogger(__name__)
+
+# --- Configuration Paths ---
+CONFIG_FILE_PATH = "config/config.ini"
+ENV_FILE_PATH = ".env"
+
+def parse_arguments() -> argparse.Namespace:
+    """Parses command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Publish Markdown articles to WeChat Official Account drafts."
     )
-    return logging.getLogger(__name__)
+    parser.add_argument(
+        "markdown_file",
+        type=str,
+        help="Path to the input Markdown file.",
+    )
+    parser.add_argument(
+        "-c", "--config",
+        type=str,
+        default=CONFIG_FILE_PATH,
+        help=f"Path to the configuration INI file (default: {CONFIG_FILE_PATH}).",
+    )
+    parser.add_argument(
+        "--env",
+        type=str,
+        default=ENV_FILE_PATH,
+        help=f"Path to the environment file (default: {ENV_FILE_PATH}).",
+    )
+    return parser.parse_args()
 
+def run():
+    """Main execution function."""
+    args = parse_arguments()
 
-def main():
-    """Main workflow for publishing articles to WeChat."""
-    logger = setup_logging()
-    logger.info("Starting WeChat article publishing process")
+    # 1. Load Configuration and Setup Logging
+    try:
+        config = load_config(args.config, args.env)
+        log_config = config.get('LOGGING', {})
+        setup_logging(
+            log_level_str=log_config.get('level', 'INFO'),
+            log_file=log_config.get('log_file') or None # Pass None if empty
+        )
+        # Load required environment variables after .env is potentially loaded
+        app_id = get_env_variable("WECHAT_APP_ID")
+        app_secret = get_env_variable("WECHAT_APP_SECRET")
+        api_base_url = config.get('WECHAT_API', {}).get('base_url', 'https://api.weixin.qq.com')
+        paths_config = config.get('PATHS', {})
+        css_path = paths_config.get('css_template', 'data/templates/style.css')
+
+    except (FileNotFoundError, ValueError, KeyError) as e:
+        # Log error even if logging setup failed partially
+        logging.basicConfig(level=logging.ERROR) # Basic fallback logger
+        logging.error(f"Configuration Error: {e}", exc_info=False) # Log concise error
+        print(f"Error: Configuration failed. {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+         logging.basicConfig(level=logging.ERROR)
+         logging.error(f"Unexpected error during configuration: {e}", exc_info=True)
+         print(f"Error: Unexpected error during configuration. Check logs.", file=sys.stderr)
+         sys.exit(1)
+
+    logger.info("Configuration loaded, logging setup complete.")
+    logger.info(f"Processing article: {args.markdown_file}")
+
+    access_token = None # Initialize
 
     try:
-        # Initialize components
-        input_reader = InputReader(Path(SETTINGS["paths"]["input_dir"]))
-        html_generator = HTMLGenerator(
-            Path(SETTINGS["paths"]["templates_dir"]) / SETTINGS["content"]["default_css"]
+        # 2. Get WeChat Access Token
+        logger.info("Fetching WeChat Access Token...")
+        access_token = get_access_token(app_id, app_secret, api_base_url)
+        logger.info("Access Token obtained successfully.")
+
+        # 3. Read Metadata
+        logger.info("Reading article metadata...")
+        markdown_path = Path(args.markdown_file)
+        metadata = extract_metadata(markdown_path)
+        logger.info(f"Metadata loaded for title: '{metadata['title']}'")
+
+        # 4. Upload Cover Image (Thumbnail)
+        cover_image_path_str = metadata['cover_image_path'] # Already validated in extract_metadata
+        logger.info(f"Uploading cover image: {cover_image_path_str}")
+        thumb_media_id = upload_thumb_media(access_token, cover_image_path_str, api_base_url)
+        logger.info(f"Cover image uploaded. Thumb Media ID: {thumb_media_id}")
+
+        # 5. Extract Markdown Content
+        logger.info("Extracting markdown content...")
+        md_content = extract_markdown_content(markdown_path)
+
+        # 6. Process HTML (Convert MD, Inject CSS, Upload/Replace Content Images)
+        logger.info("Processing HTML content (incl. image uploads)...")
+        # Create a partial function for the image uploader callback, pre-filling token and url
+        # With this line:
+        uploader_callback = lambda img_path: upload_content_image(
+            access_token=access_token,
+            image_path=img_path,
+            base_url=api_base_url
         )
-        media_extractor = MediaExtractor(Path(SETTINGS["paths"]["media_dir"]))
-        wechat_client = WeChatAPIClient(
-            SETTINGS["wechat"]["app_id"], SETTINGS["wechat"]["secret"]
+        final_html = process_html_content(
+            md_content=md_content,
+            css_path=css_path,
+            markdown_file_path=markdown_path,
+            image_uploader=uploader_callback # Pass the callback
         )
+        logger.info("HTML content processed successfully.")
+        # Optional: Save intermediate HTML for debugging
+        # html_output_path = Path(config['PATHS']['output_dir']) / f"{markdown_path.stem}.html"
+        # write_file(html_output_path, final_html)
+        # logger.info(f"Intermediate HTML saved to {html_output_path}")
 
-        # Read input files
-        logger.info("Reading input files")
-        markdown_content = input_reader.read_markdown()
-        metadata = input_reader.read_metadata()
-        media_files, cover_image = input_reader.find_media_files()
 
-        # Process content
-        logger.info("Processing article content")
-        article_content = html_generator.process_article(
-            markdown_content, metadata, media_files
-        )
+        # 7. Build Draft Payload
+        logger.info("Building draft payload...")
+        draft_payload = build_draft_payload(metadata, final_html, thumb_media_id)
 
-        # Upload media files
-        logger.info("Uploading media files")
-        media_ids = {}
-        for media_file in article_content.media_files:
-            try:
-                media_id = wechat_client.upload_media(media_file)
-                media_ids[str(media_file)] = media_id
-                logger.info(f"Uploaded media: {media_file}")
-            except WeChatAPIError as e:
-                logger.error(f"Failed to upload media {media_file}: {e}")
+        # 8. Add Draft to WeChat
+        logger.info("Submitting draft to WeChat...")
+        draft_media_id = add_draft(access_token, draft_payload, api_base_url)
+        logger.info(f"Successfully submitted draft to WeChat! Draft Media ID: {draft_media_id}")
+        print(f"\nSuccess! Article '{metadata['title']}' uploaded as draft.")
+        print(f"Draft Media ID: {draft_media_id}")
 
-        # Upload cover image if exists
-        thumb_media_id = None
-        if cover_image:
-            try:
-                thumb_media_id = wechat_client.upload_media(cover_image)
-                logger.info(f"Uploaded cover image: {cover_image}")
-            except WeChatAPIError as e:
-                logger.error(f"Failed to upload cover image {cover_image}: {e}")
-
-        # Prepare WeChat article
-        wechat_article = WeChatArticle(
-            title=metadata.title,
-            content=article_content.html_content,
-            author=metadata.author,
-            digest=metadata.summary,
-            content_source_url=metadata.original_url,
-            thumb_media_id=thumb_media_id,
-        )
-
-        # Publish article
-        logger.info("Publishing article to WeChat")
-        result = wechat_client.publish_article(wechat_article)
-        logger.info(f"Article published successfully: {result}")
-
+    except (FileNotFoundError, ValueError, KeyError, RuntimeError) as e:
+         logger.error(f"Processing failed: {e}", exc_info=False) # Log concise error for known types
+         logger.debug("Detailed traceback:", exc_info=True) # Log full trace only at debug level
+         print(f"\nError: Processing failed. {e}", file=sys.stderr)
+         sys.exit(1)
     except Exception as e:
-        logger.error(f"Error during publishing process: {e}")
-        raise
+        # Catch any unexpected errors during the main workflow
+        logger.error(f"An unexpected error occurred: {e}", exc_info=True)
+        print(f"\nError: An unexpected error occurred. Check logs for details.", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    main() 
+    # This allows running the script directly, although using the Poetry script is preferred
+    run()
