@@ -1,202 +1,97 @@
-/* 自定义样式 - 自定义样式会覆盖默认样式
- * 默认样式请参考: https://github.com/ai-chen2050/obsidian-wechat-public-platform/blob/master/src/style/wechatFormat.ts
- * ”兰青“
-*/
+/* ====== Basic Test Styles ====== */
+/* Add these simple rules first to check if CSS is applied at all */
 
-/*自定义样式，实时生效*/
-
-/* 全局属性
- * 页边距 padding: 30px;
- * 全文字体 font-family: ptima-Regular;
- * 英文换行 word-break: break-all;
- */
-#nice .layout {}
-
-/* 段落，下方未标注标签参数均同此处
- * 上边距 margin-top: 5px;
- * 下边距 margin-bottom: 5px;
- * 行高 line-height: 26px;
- * 词间距 word-spacing: 3px;
- * 字间距 letter-spacing: 3px;
- * 对齐 text-align: left;
- * 颜色 color: #3e3e3e;
- * 字体大小 font-size: 16px;
- * 首行缩进 text-indent: 2em;
- */
-#nice p {
-    text-align: justify;
+body {
+    background-color: lightblue !important; /* Make it obvious for testing */
+    color: navy; /* Basic text color */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; /* Common system fonts */
+    padding: 10px; /* Add some padding */
 }
 
-/* 一级标题 */
-#nice h1 {
-    font-size: 1.8em;
-    color: #009688;
-    margin: 1.2em auto;
-    text-align: center;
-    border-bottom: 1px solid #009688;
+h1 {
+    color: darkred;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3em;
 }
 
-/* 一级标题内容 */
-#nice h1 span {}
-
-/* 一级标题修饰 请参考有实例的主题 */
-#nice h1:after {}
-
-/* 二级标题 */
-#nice h2 {
-    color: #009688;
-    padding-left: 10px;
-    margin: 1em auto;
-    border-left: 3px solid #009688;
+h2 {
+    color: #555;
+    margin-top: 1.5em;
 }
 
-/* 二级标题内容 */
-#nice h2 span {}
-
-/* 二级标题修饰 请参考有实例的主题 */
-#nice h2:after {}
-
-/* 三级标题 */
-#nice h3 {
-    margin: 0.6em auto;
-    padding-left: 10px;
-    border-left: 2px solid #009688;
+p {
+    line-height: 1.7; /* Improved readability */
+    margin-bottom: 1.2em;
+    color: #333; /* Slightly softer than pure black/navy */
 }
 
-/* 三级标题内容 */
-#nice h3 span {}
-
-/* 三级标题修饰 请参考有实例的主题 */
-#nice h3:after {}
-
-/* 四级标题 */
-#nice h4 {
-    margin: 0.6em auto;
-    font-size: 1.2em;
-    padding-left: 10px;
-    border-left: 2px dashed #009688;
+ul, ol {
+    padding-left: 2em; /* Indent lists */
 }
 
-/* 五级标题 */
-#nice h5 {
-    margin: 0.6em auto;
-    font-size: 1.1em;
-    padding-left: 10px;
-    border-left: 1px dashed #009688;
+li {
+    margin-bottom: 0.5em;
 }
 
-/* 六级标题 */
-#nice h6 {
-    margin: 0.6em auto;
-    font-size: 1em;
-    padding-left: 10px;
-    border-left: 1px dotted #009688;
+pre {
+    background-color: #f4f4f4; /* Light grey background for code blocks */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1em;
+    overflow-x: auto; /* Allow horizontal scrolling for long lines */
+    font-size: 0.9em;
 }
 
-/* 列表内容 */
-#nice li {}
+code {
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace; /* Monospace font stack */
+    background-color: #f4f4f4; /* Match pre background or use slightly different */
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
 
-/* 引用
- * 左边缘颜色 border-left-color: black;
- * 背景色 background: gray;
- */
-#nice blockquote {
-    border-left: 2px solid #888;
-    border-right: 2px solid #888;
+pre > code {
+    background-color: transparent; /* Code inside pre shouldn't have its own background */
+    padding: 0;
+    border-radius: 0;
+}
+
+blockquote {
+    border-left: 4px solid #ccc;
     padding-left: 1em;
-    color: #777;
+    margin-left: 0;
+    color: #666;
 }
 
-/* 引用文字 */
-#nice blockquote p {}
-
-/* 链接 */
-#nice a {
-    color: #009688;
-    border-bottom: 1px solid #009688;
+img {
+    max-width: 100%; /* Ensure images don't overflow container */
+    height: auto;   /* Maintain aspect ratio */
+    display: block; /* Prevent extra space below images */
+    margin: 1em 0;  /* Add some space around images */
 }
 
-/* 加粗 */
-#nice strong {}
 
-/* 斜体 */
-#nice em {}
-
-/* 加粗斜体 */
-#nice strong em {}
-
-/* 删除线 */
-#nice del {}
-
-/* 分隔线
- * 粗细、样式和颜色
- * border-top: 1px solid #3e3e3e;
- */
-#nice hr {
-    margin: 20px 0;
+/* ====== Your Original Button Styles ====== */
+/* Beautiful, mobile-friendly button for WeChat integration */
+.wechat-button {
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(135deg, #38c76e, #2aa876);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
 }
 
-/* 图片
- * 宽度 width: 80%;
- * 居中 margin: 0 auto;
- * 居左 margin: 0 0;
- */
-#nice img {}
-
-/* 图片描述文字 */
-#nice figcaption {}
-
-/* 行内代码 */
-#nice p code,
-li code {
-    color: #009688;
+/* Hover state */
+.wechat-button:hover {
+  background: linear-gradient(135deg, #2aa876, #38c76e);
+  transform: translateY(-2px);
 }
 
-/* 非微信代码块
- * 代码块不换行 display: -webkit-box !important;
- * 代码块换行 display: block;
- */
-#nice pre code {}
-
-/*
- * 表格内的单元格
- * 字体大小 font-size: 16px;
- * 边框 border: 1px solid #ccc;
- * 内边距 padding: 5px 10px;
- */
-#nice table tr th {
-    border: 1px solid #009688;
-    background-color: #009688;
-    color: #f8f8f8;
-    border-bottom: 0;
-}
-
-#nice table tr td {
-    border: 1px solid #009688;
-}
-
-#nice table tr:nth-child(2n) {
-    background-color: #f8f8f8;
-}
-
-/* 脚注文字 */
-#nice .footnote-word {
-    color: #009688;
-}
-
-/* 脚注上标 */
-#nice .footnote-ref {
-    color: #009688;
-}
-
-/* "参考资料"四个字 */
-#nice .footnotes-sep {}
-
-/* 参考资料编号 */
-#nice .footnote-num {}
-
-/* 参考资料文字 */
-#nice .footnote-item p {}
-
-/* 参考资料解释 */
-#nice .footnote-item p em {}
+/* Add more WeChat-compatible styles below */
