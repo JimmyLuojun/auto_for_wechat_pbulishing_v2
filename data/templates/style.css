@@ -1,368 +1,278 @@
-/* ====== Global Styles & Content Element Styles ====== */
-
-/* Apply base font to the whole body */
-body {
-  font-family: PingFangSC-Light, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; /* Added fallbacks */
-  /* Add other global attributes from original #nice if needed, e.g., padding */
-  /* padding: 30px; */ /* Note: Padding on body might be ignored by WeChat */
+/* 全局属性
+ * 页边距 padding:30px;
+ * 全文字体 font-family:ptima-Regular;
+ * 英文换行 word-break:break-all;
+ */
+#nice {
+  font-family:PingFangSC-Light;
 }
 
-/* Paragraphs */
-p {
-  margin: 10px 10px; /* Consider if margin: 10px 0; is better */
-  line-height: 1.75;
-  letter-spacing: 0.2em;
+/* 段落，下方未标注标签参数均同此处
+ * 上边距 margin-top:5px;
+ * 下边距 margin-bottom:5px;
+ * 行高 line-height:26px;
+ * 词间距 word-spacing:3px;
+ * 字间距 letter-spacing:3px;
+ * 对齐 text-align:left;
+ * 颜色 color:#3e3e3e;
+ * 字体大小 font-size:16px;
+ * 首行缩进 text-indent:2em;
+ */
+#nice p {
+  margin:10px 10px;
+  line-height:1.75;
+  letter-spacing:0.2em;
+  font-size:14px;
+  word-spacing:0.1em;
+}
+
+/* 一级标题 */
+#nice h1 {
+  border-bottom:2px solid rgb(248,57,41);
+  font-size:1.3em;
+}
+
+/* 一级标题内容 */
+#nice h1 .content {
+  display:inline-block;
+  font-weight:normal;
+  background:rgb(248,57,41);
+  color:#ffffff;
+  padding:3px 10px 1px;
+  border-top-right-radius:3px;
+  border-top-left-radius:3px;
+  margin-right:3px;
+}
+
+/* 一级标题修饰 请参考有实例的主题 */
+#nice h1:after {
+}
+ 
+/* 二级标题 */
+#nice h2 {
+  text-align:left;
+  margin:20px 10px 0px 0px;
+}
+
+/* 二级标题内容 */
+#nice h2 .content {
+  font-family:STHeitiSC-Light;
+  font-size:18px;
+  font-weight:bolder;
+  display:inline-block;
+  padding-left:10px;
+  border-left:5px solid rgb(248,57,41);
+}
+
+/* 二级标题修饰 请参考有实例的主题 */
+#nice h2:after {
+}
+
+/* 三级标题 */
+#nice h3 {
+}
+
+/* 三级标题内容 */
+#nice h3 .content {
+  font-size:14px;
+  color:rgb(165,213,93);
+}
+
+/* 三级标题修饰 请参考有实例的主题 */
+#nice h3:after {
+}
+
+/* 无序列表整体样式
+ * list-style-type: square|circle|disc;
+ */
+#nice ul {
   font-size: 14px;
-  word-spacing: 0.1em;
-  color: #3e3e3e; /* Original color from comment */
-  /* text-indent: 2em; */ /* First-line indent might not work consistently */
 }
 
-/* --- Headings --- */
-
-/* H1 */
-h1 {
-  border-bottom: 2px solid rgb(248, 57, 41);
-  font-size: 1.3em; /* Relative size */
-  /* Add margins if needed */
-  margin-top: 1.5em;
-  margin-bottom: 1em;
-}
-
-/* H1 Content Span (if markdown generates <h1 class="content">) */
-h1 .content {
-  display: inline-block;
-  font-weight: normal;
-  background: rgb(248, 57, 41);
-  color: #ffffff;
-  padding: 3px 10px 1px;
-  border-top-right-radius: 3px; /* border-radius might be stripped */
-  border-top-left-radius: 3px; /* border-radius might be stripped */
-  margin-right: 3px;
-}
-
-/* H1 Pseudo-element (might be stripped by WeChat) */
-h1:after {
-  /* Original was empty */
-}
-
-/* H2 */
-h2 {
-  text-align: left;
-  margin: 20px 10px 10px 0px; /* Adjusted bottom margin slightly */
-  /* Add other H2 styles if needed */
-}
-
-/* H2 Content Span (if markdown generates <h2 class="content">) */
-h2 .content {
-  font-family: STHeitiSC-Light, sans-serif; /* Added fallback */
-  font-size: 18px;
-  font-weight: bolder;
-  display: inline-block;
-  padding-left: 10px;
-  border-left: 5px solid rgb(248, 57, 41);
-}
-
-/* H2 Pseudo-element (might be stripped by WeChat) */
-h2:after {
-  /* Original was empty */
-}
-
-/* H3 */
-h3 {
-  /* Add base H3 styles if needed, e.g., margin */
-  margin-top: 1.5em;
-  margin-bottom: 0.8em;
-}
-
-/* H3 Content Span (if markdown generates <h3 class="content">) */
-h3 .content {
-  font-size: 14px; /* Note: Same size as P in original CSS */
-  font-weight: bold; /* Added for distinction */
-  color: rgb(165, 213, 93);
-}
-
-/* H3 Pseudo-element (might be stripped by WeChat) */
-h3:after {
-  /* Original was empty */
-}
-
-/* --- Lists --- */
-
-/* Unordered List */
-ul {
+/* 有序列表整体样式
+ * list-style-type: upper-roman|lower-greek|lower-alpha;
+ */
+#nice ol {
   font-size: 14px;
-  list-style-type: disc; /* Default */
-  padding-left: 2em; /* Keep original indent attempt */
-  margin-bottom: 1em;
 }
 
-/* Ordered List */
-ol {
-  font-size: 14px;
-  list-style-type: decimal; /* Default */
-  padding-left: 2em; /* Keep original indent attempt */
-  margin-bottom: 1em;
+/* 列表内容，不要设置li
+ */
+#nice li section {
+  font-size:13px;
 }
 
-/* List Item Content (Original targeted 'li section') */
-/* This might need adjustment based on actual HTML output */
-/* Targeting 'li' directly is more common */
-li {
-  font-size: 13px; /* Applied directly to li */
-  margin-bottom: 0.5em; /* Keep original */
-  line-height: 1.7; /* Inherit or set explicitly */
-  color: #3e3e3e; /* Inherit or set explicitly */
+/* 引用
+ * 左边缘颜色 border-left-color:black;
+ * 背景色 background:gray;
+ */
+#nice blockquote {
+  font-style:normal;
+  border-left:none;
+  padding:10px;
+  position:relative;
+  line-height:1.8;
+  border-radius:0px 0px 10px 10px;
+  color:#FEEEED;
+  background:#000;
+  box-shadow:#84A1A8 0px 10px 15px;
 }
-/* If markdown wraps li content in <p>, style li p instead */
-/* li p { font-size: 13px; margin: 0; } */
-
-
-/* --- Blockquote --- */
-/* Note: Complex styles like gradients, box-shadow, pseudo-elements are very likely to be stripped */
-blockquote {
-  font-style: normal;
-  border-left: 4px solid rgb(248, 57, 41); /* Changed color to theme, removed original 'none' */
-  padding: 10px 10px 10px 15px; /* Adjusted padding */
-  margin: 1.5em 10px; /* Added standard margin */
-  /* position: relative; */ /* Position likely stripped */
-  line-height: 1.8;
-  /* border-radius: 0px 0px 10px 10px; */ /* border-radius likely stripped */
-  color: #555; /* Changed from white for readability if background is stripped */
-  background: #f9f9f9; /* Changed from black, simpler background */
-  /* box-shadow: #84A1A8 0px 10px 15px; */ /* box-shadow likely stripped */
+#nice blockquote:before {
+  content:" ";
+  display:inline;
+  color:#FFF;
+  font-size:4em;
+  font-family:Arial,serif;
+  line-height:1em;
+  font-weight:700;
 }
 
-/* Pseudo-elements likely stripped, removed for clarity */
-/* blockquote:before { ... } */
-/* blockquote:after { ... } */
-
-/* Paragraphs inside blockquote */
-blockquote p {
-  color: #555; /* Match blockquote color */
-  font-size: 13px;
-  display: block; /* Changed from inline for paragraph behavior */
-  margin-bottom: 0.5em; /* Add some spacing */
+/* 引用文字 */
+#nice blockquote p {
+  color:#FEEEED;
+  font-size:13px;
+  display:inline;
 }
-blockquote p:last-child {
-  margin-bottom: 0;
+#nice blockquote:after {
+  content:"”";
+  float:right;
+  display:inline;
+  color:#FFF;
+  font-size:3em;
+  line-height:1em;
+  font-weight:500;
 }
 
-
-/* --- Inline Elements --- */
-
-/* Links */
-a {
-  color: rgb(248, 57, 41);
+/* 链接 
+ * border-bottom: 1px solid #009688;
+ */
+#nice a {
+  color:rgb(248,57,41);
   border-bottom: 1px solid #ff3502;
-  text-decoration: none; /* Added to remove default underline */
-  /* font-family: STHeitiSC-Light; */ /* Usually inherit font */
-}
-a:hover {
-  text-decoration: underline; /* Add hover effect */
+  font-family:STHeitiSC-Light;
 }
 
-/* Bold */
-strong {
-  font-weight: bolder; /* Changed from 'border' which is invalid */
-  color: rgb(248, 57, 41);
+/* 加粗 */
+#nice strong {
+  font-weight:border;
+  color:rgb(248,57,41);
 }
 
-/* Italic */
-em {
-  color: rgb(248, 57, 41);
-  letter-spacing: 0.1em; /* Reduced spacing slightly */
-  font-style: italic; /* Ensure italic style */
+/* 斜体 */
+#nice em {
+  color:rgb(248,57,41);
+  letter-spacing:0.3em;
 }
 
-/* Bold Italic */
-em strong {
-  /* Inherits styles from em and strong */
-  /* color: rgb(248, 57, 41); */ /* Already set by em/strong */
-  /* letter-spacing: 0.3em; */ /* Already set by em */
+/* 加粗斜体 */
+#nice em strong {
+  color:rgb(248,57,41);
+  letter-spacing:0.3em;
 }
 
-/* Strikethrough */
-del {
-  /* Default browser styling usually sufficient */
-  color: #999; /* Optional: make it grey */
+/* 删除线 */
+#nice del {
+}
+ 
+/* 分隔线
+ * 粗细、样式和颜色
+ * border-top:1px solid #3e3e3e;
+ */
+#nice hr {
+  height:1px;
+  padding:0;
+  border:none;
+  border-top:medium solidid #333;
+  text-align:center;
+  background-image:linear-gradient(to right,rgba(248,57,41,0),rgba(248,57,41,0.75),rgba(248,57,41,0));
 }
 
-/* --- Other Elements --- */
-
-/* Horizontal Rule */
-hr {
-  height: 1px;
-  padding: 0;
-  border: none;
-  /* border-top: medium solidid #333; */ /* Invalid 'solidid' */
-  border-top: 1px solid #ccc; /* Simplified */
-  text-align: center;
-  /* background-image: linear-gradient(to right,rgba(248,57,41,0),rgba(248,57,41,0.75),rgba(248,57,41,0)); */ /* Gradients likely stripped */
-  background-color: #ccc; /* Fallback color */
-  margin: 2em 0; /* Add vertical spacing */
+/* 图片
+ * 宽度 width:80%;
+ * 居中 margin:0 auto;
+ * 居左 margin:0 0;
+ */
+#nice img {
+  border-radius:0px 0px 5px 5px;
+  display:block;
+  margin:20px auto;
+  width:85%;
+  height:100%;
+  object-fit:contain;
+  box-shadow:#84A1A8 0px 10px 15px;
 }
 
-/* Images */
-img {
-  border-radius: 5px; /* Might be stripped */
-  display: block;
-  margin: 20px auto; /* Center images */
-  max-width: 100%; /* Changed from 85% to ensure responsiveness */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: contain;
-  /* box-shadow: #84A1A8 0px 10px 15px; */ /* box-shadow likely stripped */
+/* 图片描述文字 */
+#nice figcaption {
+  display:block;
+  font-size:12px;
+  font-family:PingFangSC-Light;
 }
 
-/* Image Caption */
-figcaption {
-  display: block;
-  font-size: 12px;
-  font-family: PingFangSC-Light, sans-serif; /* Added fallback */
-  color: #777; /* Make caption less prominent */
-  text-align: center; /* Center caption */
-  margin-top: -10px; /* Adjust spacing relative to image */
-  margin-bottom: 20px;
+/* 行内代码 */
+#nice p code, #nice li code {
+  color:rgb(271,93,108);
 }
 
-/* --- Code --- */
-
-/* Inline Code */
-p code, li code { /* Targets code NOT inside pre */
-  color: rgb(200, 0, 0); /* Adjusted color from original example */
-  background-color: #f4f4f4;
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-size: 0.9em;
+/* 非微信代码块
+ * 代码块不换行 display:-webkit-box !important;
+ * 代码块换行 display:block;
+ */
+#nice pre code {
 }
 
-/* Code within Pre blocks */
-pre code {
-  color: inherit; /* Inherit color from pre */
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-  background-color: transparent; /* No background needed */
-  padding: 0;
-  border-radius: 0;
-  font-size: 1em; /* Let pre control overall size */
-  /* display: block; */ /* Let <pre> handle block display */
-}
-
-/* Code Blocks */
-pre {
-  background-color: #f4f4f4;
-  border: 1px solid #ddd;
-  border-radius: 4px; /* Might be stripped */
-  padding: 1em;
-  overflow-x: auto;
-  font-size: 0.9em;
-  line-height: 1.45; /* Adjust line height for code */
-  margin: 1.5em 0;
-}
-
-
-/* --- Tables --- */
-table {
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    width: 100%; /* Optional: make tables full-width */
-}
-
-/* Table Cells (Header and Data) */
-table tr th,
-table tr td {
+/*
+ * 表格内的单元格
+ * 字体大小 font-size: 16px;
+ * 边框 border: 1px solid #ccc;
+ * 内边距 padding: 5px 10px;
+ */
+#nice table tr th,
+#nice table tr td {
   font-size: 14px;
-  border: 1px solid #ccc;
-  padding: 8px 12px; /* Adjust padding */
-  text-align: left;
 }
 
-table tr th { /* Header specific */
-    background-color: #f0f0f0;
-    font-weight: bold;
+/* 脚注文字 */
+#nice .footnote-word {
+  color:rgb(248,57,41);
 }
 
-
-/* --- Footnotes (Keep classes as defined) --- */
-/* Note: These require your markdown processor to generate these specific classes */
-.footnote-word {
-  color: rgb(248, 57, 41);
-  font-weight: bold; /* Added distinction */
+/* 脚注上标 */
+#nice .footnote-ref {
+  color:rgb(248,57,41);
 }
 
-.footnote-ref {
-  color: rgb(248, 57, 41);
-  vertical-align: super;
-  font-size: 0.8em;
+/*脚注链接样式*/
+#nice .footnote-item em {
+  color:#6E1E51;
+  font-size:12px;
 }
 
-/* Separator line (if generated) */
-.footnotes-sep {
-    margin: 2em 0;
-    border-top: 1px solid #ccc;
-}
-/* Style the :before pseudo-element if needed and if supported */
-/* .footnotes-sep:before { content: "参考资料"; display: block; text-align: center; } */
-
-/* Footnote item number */
-.footnote-num {
-    font-weight: bold;
-    color: #333;
+/* "参考资料"四个字 
+ * 内容 content: "参考资料";
+ */
+#nice .footnotes-sep:before {
 }
 
-/* Paragraph within footnote item */
-.footnote-item p {
-    font-size: 12px; /* Make footnotes smaller */
-    line-height: 1.5;
-    margin-bottom: 0.5em;
-    color: #555;
-    display: inline; /* Often footnote paragraph is inline with number */
+/* 参考资料编号 */
+#nice .footnote-num {
 }
 
-/* Italic text within footnote paragraph */
-.footnote-item p em {
-  color: #6E1E51; /* Keep original */
-  font-size: 12px; /* Match parent p */
-  font-style: italic;
+/* 参考资料文字 */
+#nice .footnote-item p { 
 }
 
-
-/* --- Equations (Keep classes as defined) --- */
-/* Note: Styling SVG content with CSS can be complex and support varies */
-.block-equation svg {
-  /* max-width: 300% !important; */ /* Max-width > 100% can be problematic */
-  max-width: 100%;
-  display: block;
-  margin: 1em auto; /* Center block equations */
+/* 参考资料解释 */
+#nice .footnote-item p em {
 }
 
-.inline-equation svg {
-  /* Style inline equations if needed, e.g., vertical alignment */
-  vertical-align: middle;
+/* 行间公式
+ * 最大宽度 max-width: 300% !important;
+ */
+#nice .block-equation svg {
 }
 
-
-/* ====== Your Original Button Styles ====== */
-/* Keep these as they target a specific class */
-.wechat-button {
-  display: inline-block;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  color: #fff !important; /* Use important if needed */
-  background: linear-gradient(135deg, #38c76e, #2aa876) !important; /* Use important */
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* transition: background 0.3s ease, transform 0.3s ease; */ /* Transitions unlikely to work */
-  cursor: pointer;
-  margin: 1em 0; /* Add some margin */
+/* 行内公式
+ */
+#nice .inline-equation svg {  
 }
-
-/* Hover state might not work in WeChat */
-/* .wechat-button:hover {
-  background: linear-gradient(135deg, #2aa876, #38c76e) !important;
-  transform: translateY(-2px);
-} */
