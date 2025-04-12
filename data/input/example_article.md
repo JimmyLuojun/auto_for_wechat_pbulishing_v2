@@ -1,90 +1,69 @@
 ---
 title: "Getting Started with Python Web Development"
-author: "Jane Doe"
+author: "Jimmy Luo"
 date: "2024-04-10"
-tags: ["python", "web development", "tutorial"]
-summary: "A beginner's guide to Python web development, covering frameworks, tools, and best practices."
+tags: ["1", "2", "3"]
+digest: "Quick guide to starting Python web development."
 cover_image_path: /Users/junluo/Documents/auto_for_wechat_pbulishing_v2/data/input/inserting_media/cover_image/cover_image.jpg
 ---
 
-# Getting Started with Python Web Development
+你有没有过情绪失控的时候呢？对别人说了一堆带着满满情绪的话，事后感觉很后悔，自己怎么能说出这么恶毒的话去伤害对方呢？尤其对方是自己亲朋好友的时候，我们会更加的自责，愧疚，心里暗自说**我下次一定改，要忍住不出口伤人**。但是，下次类似的场景依旧出现，反反复复。
 
-Python has become one of the most popular languages for web development, thanks to its simplicity and powerful frameworks. In this article, we'll explore the basics of Python web development and help you get started on your journey.
 
-## Why Python for Web Development?
 
-Python offers several advantages for web development:
+## 为什么使用逻辑的第一步是要把命题定义成：能判断真伪的陈述句？
 
-- **Easy to Learn**: Python's syntax is clean and readable
-- **Rich Ecosystem**: Numerous frameworks and libraries
-- **Rapid Development**: Quick prototyping and development
-- **Strong Community**: Extensive documentation and support
+### 为什么得能判断真伪？
 
-![content_image](/Users/junluo/Documents/auto_for_wechat_pbulishing_v2/data/input/inserting_media/content_image/content_image.jpg)
+人们说话是为了沟通彼此意见和想法，以**达成共识**。如果一开始人们说的话，传达的想法是模棱两可的，人们各有各自的理解，大家站在各自的理解进行推理，得出的结论就没有沟通的意义，无法达成共识。
 
-## Popular Python Web Frameworks
+然而，人们说了一句话，双方都可以判断这句话是对是错，从这一刻开始双方才有可能开启了沟通这个过程。双方不断基于同一事物的事实抛出可以判断真伪的话，然后一起用公认正确的推理规则对这些话进行推理，最后得到的结论自然而然就是双方达成的共识。
 
-### Django
 
-Django is a high-level framework that follows the "batteries included" philosophy. It provides:
 
-- Built-in admin interface
-- ORM (Object-Relational Mapping)
-- Authentication system
-- Template engine
+### 为什么是陈述句？
 
-```python
-# Example Django view
-from django.http import HttpResponse
+是为了*简化推理的难度*。
 
-def hello_world(request):
-    return HttpResponse("Hello, World!")
-```
+人们的情绪多种多样，复杂多变，情绪强弱各不相同，无法通过推理来达成共识。陈述句是把人的情绪尽可能地去掉，使得人们可以基于判断事实的真伪来进行推理从而达成共识成为可能。
 
-### Flask
+### 为什么命题的两个特点中的一个是：命题需要符合同一律？
 
-Flask is a micro-framework that gives you more flexibility:
+> 双方需要对同一事物的真相和事实进行真伪的判断，否则即便双方说的话是可以判断真伪的，但是各自是对不同的对象进行真值判断的话，也无法产生实际沟通的意义。
 
-- Lightweight and modular
-- Easy to extend with plugins
-- Great for small to medium applications
 
-```python
-# Example Flask route
-from flask import Flask
+ 
 
-app = Flask(__name__)
+### 为什么要建立命题之间的逻辑关系？
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-```
+这可以使得命题之间的关系是一环套一环，这关系是有逻辑支撑的。
 
-## Essential Tools and Libraries
+由于人们对事物之间的关系认知差别大，对与错的认知，模棱两可的认知交织在一起，导致人们在建立命题之间的逻辑关系时犯各种各样的错误。
 
-1. **Virtual Environments**: `venv` or `pipenv`
-2. **Package Management**: `pip`
-3. **Database ORMs**: SQLAlchemy, Django ORM
-4. **Testing**: pytest, unittest
-5. **API Development**: FastAPI, Django REST framework
+### 为什么要搭建逻辑链条？
 
-## Best Practices
+这使得命题之间的关系是环环相扣的，从前提到结论的每一步都是有逻辑支撑的。
 
-1. **Use Virtual Environments**: Isolate project dependencies
-2. **Follow PEP 8**: Maintain consistent code style
-3. **Write Tests**: Ensure code reliability
-4. **Use Version Control**: Track changes with Git
-5. **Document Your Code**: Make it maintainable
+普遍的人们没有进行系统的逻辑训练，绝大多数人并不清楚逻辑规则，于是即便在第二步建立起了命题之间的逻辑关系，也无法使用正确的逻辑规则搭建逻辑链条，从而得到正确的推理结论。
 
-## Next Steps
 
-Ready to start your Python web development journey? Here are some resources:
+ 
 
-- [Python Official Documentation](https://docs.python.org/)
-- [Django Documentation](https://docs.djangoproject.com/)
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [Real Python Tutorials](https://realpython.com/)
 
-Remember, the best way to learn is by building projects. Start small, experiment, and gradually take on more complex challenges.
+### 别有心机的人会通过哪些手段实现损人利己呢？
 
-Happy coding! 
+1. 非暴力手段：在使用逻辑的三个步骤的每一个环节别有用心的人都可能设套；
+
+2. 暴力手段：（权力/道德暴力）手段达成损人利己的目的；
+
+3. 非暴力手段和暴力手段结合起来达成损人利己的目的。
+
+   
+
+## 当我跟一个人进行交流的时候，我如何把逻辑运用起来呢？
+
+1. 把对方说的想法转换成命题，把自己理解的命题与对方进行确认（一是对命题的所指的对象达成一致，确保满足同一律；二是对命题的真值达成一致意见）；对自己的想法也是进行如此操作。
+
+2. 搭建命题之间的逻辑关系；
+
+3. 搭建命题之间的逻辑链条。
