@@ -18,7 +18,11 @@ from .core.payload_builder import build_draft_payload
 
 # Import WeChat API interaction modules
 from .wechat.auth import get_access_token
-from .wechat.api import upload_thumb_media, add_draft, upload_content_image
+# --- Import MediaManager and only API functions NOT handled by it ---
+from .wechat.media_manager import MediaManager, CACHE_FILENAME # Import default path
+from .wechat.api import add_draft # upload functions are now called via MediaManager
+# --- End Import Change ---
+
 
 logger = logging.getLogger(__name__)
 
@@ -35,20 +39,19 @@ def _initial_setup(args: argparse.Namespace) -> Tuple[Dict[str, Any], Dict[str, 
         log_file=log_config.get('log_file') or None
     )
 
-    app_id = get_env_variable("WECHAT_APP_ID")
-    app_secret = get_env_variable("WECHAT_APP_SECRET")
-    api_config = config.get('WECHAT_API', config.get('wechat', {}))
-    api_base_url = api_config.get('base_url', 'https://api.weixin.qq.com')
-
-    html_config = config.get('html', {})
-    css_path = html_config.get('css_file', 'data/templates/style.css')
-    # Get placeholder from config, with a default
-    default_placeholder = "<p>Please paste formatted content here.</p>"
-    placeholder_html = html_config.get('placeholder_html', default_placeholder)
-
-
-    auth_info = {"app_id": app_id, "app_secret": app_secret, "base_url": api_base_url}
-    settings = {"css_path": css_path, "placeholder_html": placeholder_html}
+    auth_info = {
+        "app_id": get_env_variable("WECHAT_APP_ID"),
+        "app_secret": get_env_variable("WECHAT_APP_SECRET"),
+        "base_url": config.get('wechat', {}).get('base_url', 'https://api.weixin.qq.com')
+    }
+    settings = {
+        "css_path": config.get('html', {}).get('css_file', 'data/templates/style.css'),
+        "placeholder_html": config.get('html', {}).get(
+            'placeholder_html', "<p>Please paste formatted content here.</p>"
+        ),
+        # --- Add Cache Path to Settings ---
+        "media_cache_path": config.get('paths', {}).get('media_cache_file', CACHE_FILENAME)
+    }
 
     logger.info("Configuration loaded, logging setup complete.")
     return auth_info, settings
@@ -68,22 +71,17 @@ def run():
     args = parse_arguments()
     auth_info = {}
     settings = {}
-    final_html = "" # Ensure defined for potential use in error handling
+    final_html = "" # For preview
 
-    # 1. Initial Setup (Config, Logging, Credentials)
+    # 1. Initial Setup
     try:
         auth_info, settings = _initial_setup(args)
-    except (FileNotFoundError, ValueError, KeyError) as e:
-        # Basic logger needed if setup_logging failed
-        logging.basicConfig(level=logging.ERROR)
-        logging.error(f"Configuration Error: {e}", exc_info=False)
-        print(f"Error: Configuration failed. {e}", file=sys.stderr)
-        sys.exit(1)
     except Exception as e:
-         logging.basicConfig(level=logging.ERROR)
-         logging.error(f"Unexpected error during initial setup: {e}", exc_info=True)
-         print(f"Error: Unexpected error during initial setup. Check logs.", file=sys.stderr)
-         sys.exit(1)
+        # Handle setup errors (keep existing handling)
+        logging.basicConfig(level=logging.ERROR) # Fallback
+        logging.error(f"Initial Setup Error: {e}", exc_info=True)
+        print(f"Error: Initial Setup failed. {e}", file=sys.stderr)
+        sys.exit(1)
 
     logger.info(f"Processing article: {args.markdown_file}")
 
@@ -95,28 +93,37 @@ def run():
         )
         logger.info("Access Token obtained successfully.")
 
+        # --- Instantiate Media Manager ---
+        media_manager = MediaManager(cache_file_path=settings["media_cache_path"])
+        # --- End Instantiate ---
+
+
         # 3. Read Metadata
         logger.info("Reading article metadata...")
         markdown_path = Path(args.markdown_file)
         metadata = extract_metadata(markdown_path)
         logger.info(f"Metadata loaded for title: '{metadata['title']}'")
 
-        # 4. Upload Cover Image
+        # 4. Get or Upload Cover Image (Thumbnail) using MediaManager
         cover_image_path_str = metadata['cover_image_path']
-        logger.info(f"Uploading cover image: {cover_image_path_str}")
-        thumb_media_id = upload_thumb_media(
+        logger.info(f"Getting/Uploading cover image: {cover_image_path_str}")
+        # *** Use MediaManager method ***
+        thumb_media_id = media_manager.get_or_upload_thumb_media(
             access_token, cover_image_path_str, auth_info["base_url"]
         )
-        logger.info(f"Cover image uploaded. Thumb Media ID: {thumb_media_id}")
+        logger.info(f"Cover image ready. Thumb Media ID: {thumb_media_id}")
 
         # 5. Extract Markdown Content
         logger.info("Extracting markdown content...")
         md_content = extract_markdown_content(markdown_path)
 
-        # 6. Process HTML for Preview
+        # 6. Process HTML for Preview (incl. image uploads via MediaManager)
         logger.info("Processing HTML content for PREVIEW...")
-        uploader_callback = lambda img_path: upload_content_image(
-            access_token=access_token, image_path=img_path, base_url=auth_info["base_url"]
+        # *** Modify uploader_callback to use MediaManager method ***
+        uploader_callback = lambda img_path: media_manager.get_or_upload_content_image_url(
+            access_token=access_token,
+            image_path=img_path,
+            base_url=auth_info["base_url"]
         )
         final_html = process_html_content(
             md_content=md_content, css_path=settings["css_path"],
@@ -126,27 +133,26 @@ def run():
 
         # 7. Show Preview and Get Confirmation
         show_preview_and_confirm(final_html)
-        # Execution continues only if user presses Enter
 
         # 8. Build Draft Payload (Using Placeholder)
         logger.info("Building draft payload with placeholder content...")
-        placeholder_content = settings["placeholder_html"] # Get from settings
+        placeholder_content = settings["placeholder_html"]
         draft_payload = build_draft_payload(metadata, placeholder_content, thumb_media_id)
-        # (Optional size check removed for brevity, can be added back)
+        # (Optional size check removed for brevity)
 
         # 9. Add Draft to WeChat
         logger.info("Submitting draft with placeholder content to WeChat...")
+        # *** Call add_draft directly (not handled by MediaManager) ***
         draft_media_id = add_draft(access_token, draft_payload, auth_info["base_url"])
         logger.info(f"Successfully submitted draft placeholder to WeChat! Draft Media ID: {draft_media_id}")
         print(f"\nSuccess! Draft created for article '{metadata['title']}'.")
         print(f"Draft Media ID: {draft_media_id}")
         print("\nIMPORTANT: Now copy the styled content from the browser preview and paste it into the draft in the WeChat editor.")
 
-    # --- Consolidated Error Handling ---
+    # (Keep existing exception handling)
     except (FileNotFoundError, ValueError, KeyError, RuntimeError) as e:
          logger.error(f"Processing failed: {e}", exc_info=False)
          logger.debug("Detailed traceback:", exc_info=True)
-         # Add specific checks back here if needed (e.g., for 45004)
          print(f"\nError: Processing failed. {e}", file=sys.stderr)
          sys.exit(1)
     except KeyboardInterrupt:
